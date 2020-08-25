@@ -24,7 +24,7 @@ pipeline {
       steps {
         script {
           checkout scm
-          docker.withRegistry('', 'dockerUserID') {
+          docker.withRegistry('', 'dockerhub') {
           def customImage = docker.build("jvision1/hol-pipeline:${env.BUILD_ID}")
           customImage.push()
           }
