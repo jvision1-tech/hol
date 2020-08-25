@@ -5,29 +5,32 @@ pipeline {
     }
 
     stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-                sh 'mvn clean'
-                sh 'mvn install'
-                sh 'mvn package'
-            }
         
-        }
-        stage('deploy ') {
+       stage('build') {
             steps {
                 echo 'Hello build'
-               
-            }
-           }
-    
-    stage('test') {
-            steps {
-                echo 'Hello test'
+                sh 'mvn clean'
+                sh  'mvn install'
+                sh 'mvn package'
             }
         }
-    
+        stage('test') {
+            steps {
+                sh 'mvn test'
+                
+            }
+        }
+        stage ('build and publish image') {
+      steps {
+        script {
+          checkout scm
+          docker.withRegistry('', 'dockerUserID') {
+          def customImage = docker.build("jvision1/hol-pipeline:${env.BUILD_ID}")
+          customImage.push()
+          }
     }
-   
- 
+        
+    }
 }
+
+
